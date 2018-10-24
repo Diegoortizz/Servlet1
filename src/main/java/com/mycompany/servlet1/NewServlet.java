@@ -7,6 +7,7 @@ package com.mycompany.servlet1;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import simplejdbc.*;
 public class NewServlet extends HttpServlet {
 
     private DAO myDAO; // L'objet à tester
+    private DAOState myDAOState; // L'objet à tester
     private DataSource myDataSource; // La source de données à utiliser
 
     /**
@@ -36,10 +38,11 @@ public class NewServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, DAOException {
+            throws ServletException, IOException, DAOException, SQLException {
         System.out.println("IN THE PROCESSREQUEST");
         myDataSource = DataSourceFactory.getDataSource();
         myDAO = new DAO(myDataSource);
+        myDAOState = new DAOState(myDataSource);
         response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
@@ -57,7 +60,7 @@ public class NewServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Servlet NewServlet at " + request.getContextPath() + "</h1>");
 
-            List<String> states = myDAO.EveryState();
+            List<String> states = myDAOState.EveryState();
             String param = selectedvalue;
 
             out.println("<form method = 'post'>");
@@ -65,23 +68,23 @@ public class NewServlet extends HttpServlet {
             out.println("<select name=\"selection\">");
             for (int i = 0; i < states.size(); i++) {
                 String state = states.get(i);
-                System.out.println(state +" "+ param);
-                if (state.equals(param)){
-                        out.print("<option value='");
-                out.print(state);
-                out.print("'");
-                out.print("selected>");
-                out.print(state);
-                out.print("</option>");
-                out.println("");
+                System.out.println(state + " " + param);
+                if (state.equals(param)) {
+                    out.print("<option value='");
+                    out.print(state);
+                    out.print("'");
+                    out.print("selected>");
+                    out.print(state);
+                    out.print("</option>");
+                    out.println("");
                 } else {
-                out.print("<option value='");
-                out.print(state);
-                out.print("'");
-                out.print(">");
-                out.print(state);
-                out.print("</option>");
-                out.println("");
+                    out.print("<option value='");
+                    out.print(state);
+                    out.print("'");
+                    out.print(">");
+                    out.print(state);
+                    out.print("</option>");
+                    out.println("");
                 }
             }
             out.println("</select>");
@@ -134,7 +137,7 @@ public class NewServlet extends HttpServlet {
         try {
             System.out.println("IN THE DOGET");
             processRequest(request, response);
-        } catch (DAOException ex) {
+        } catch (DAOException | SQLException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -159,7 +162,7 @@ public class NewServlet extends HttpServlet {
             System.out.println("");
             processRequest(request, response);
 
-        } catch (DAOException ex) {
+        } catch (DAOException | SQLException ex) {
             Logger.getLogger(NewServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
