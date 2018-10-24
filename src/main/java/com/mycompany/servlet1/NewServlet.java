@@ -39,7 +39,7 @@ public class NewServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, DAOException, SQLException {
-        System.out.println("IN THE PROCESSREQUEST");
+//        System.out.println("IN THE PROCESSREQUEST");
         myDataSource = DataSourceFactory.getDataSource();
         myDAO = new DAO(myDataSource);
         myDAOState = new DAOState(myDataSource);
@@ -68,7 +68,7 @@ public class NewServlet extends HttpServlet {
             out.println("<select name=\"selection\">");
             for (int i = 0; i < states.size(); i++) {
                 String state = states.get(i);
-                System.out.println(state + " " + param);
+//                System.out.println(state + " " + param);
                 if (state.equals(param)) {
                     out.print("<option value='");
                     out.print(state);
